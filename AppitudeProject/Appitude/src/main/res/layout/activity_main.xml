@@ -33,5 +33,6 @@
         android:id="@+id/BtnRemember"
         android:layout_gravity="center_horizontal"
         android:textSize="40dp"
+        android:onClick="BtnClickRememberOnClick"
         />
 </LinearLayout>

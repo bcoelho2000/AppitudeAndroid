@@ -20,6 +20,7 @@ import java.io.File;
 public class MainActivity extends ActionBarActivity {
 
     static final int CAPTURE_REQUEST_CODE = 1;
+    static final int REMEMBER_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,11 @@ public class MainActivity extends ActionBarActivity {
         startActivityForResult(new Intent(this, CaptureActivity.class), CAPTURE_REQUEST_CODE);
     }
 
+    public void BtnClickRememberOnClick(View view)
+    {
+        startActivityForResult(new Intent(this, RememberActivity.class), REMEMBER_REQUEST_CODE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -73,9 +79,7 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == CAPTURE_REQUEST_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // The user took a photo
 
-                // Do something with it
             }
             else{
             }
