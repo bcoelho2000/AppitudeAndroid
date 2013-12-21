@@ -2,34 +2,25 @@ package org.therrabitway.appitude;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.ImageView;
 
-import org.therrabitway.appitude.Factory.AlbumStorageFactory;
+import org.therrabitway.appitude.Media.MediaManager;
 import org.therrabitway.appitude.Technical.BitmapManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class CaptureActivity extends ActionBarActivity {
 
@@ -37,35 +28,8 @@ public class CaptureActivity extends ActionBarActivity {
     static final String JPEG_FILE_PREFIX = "Appitude";
     static final String JPEG_FILE_SUFFIX = ".jpg";
 
-    protected String AlbumName = "Appitude"; //getResources().getString(R.string.app_name);
-
     private String m_CurrentPhotoPath;
 
-    private File GetAlbumDirectory() {
-        File storageDir = null;
-
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
-        {
-            storageDir = AlbumStorageFactory.Create(AlbumName).GetAlbumStoragePath();
-
-            if (storageDir != null)
-            {
-                if (! storageDir.mkdirs())
-                {
-                    if (! storageDir.exists())
-                    {
-                        Log.d("Appitude.CaptureActivity.GetAlbumDirectory", "failed to create directory");
-                        return null;
-                    }
-                }
-            }
-
-        } else {
-            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
-        }
-
-        return storageDir;
-    }
 
     private File CreateImageFile() throws IOException
     {
@@ -75,7 +39,7 @@ public class CaptureActivity extends ActionBarActivity {
         File f = File.createTempFile(
                         JPEG_FILE_PREFIX + timeStamp + "_",
                         JPEG_FILE_SUFFIX,
-                        GetAlbumDirectory());
+                        MediaManager.GetAlbumDirectory());
 
         m_CurrentPhotoPath = f.getAbsolutePath();
 
@@ -167,29 +131,6 @@ public class CaptureActivity extends ActionBarActivity {
 
         }
 
-    }
-
-    private void SaveImage(Bitmap finalBitmap)
-    {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/Appitude/");
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        MediaScannerConnection.scanFile(this,new String[]{file.toString()}, null, null);
     }
 
     @Override

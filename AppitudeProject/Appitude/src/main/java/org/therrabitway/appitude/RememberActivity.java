@@ -2,6 +2,7 @@ package org.therrabitway.appitude;
 
 import org.therrabitway.appitude.Delegates.OnSwipeTouchListener;
 import org.therrabitway.appitude.Factory.AlbumStorageFactory;
+import org.therrabitway.appitude.Media.MediaManager;
 import org.therrabitway.appitude.Technical.BitmapManager;
 import org.therrabitway.appitude.util.SystemUiHider;
 
@@ -180,7 +181,7 @@ public class RememberActivity extends Activity {
     }
 
     private void setupImages(ViewFlipper view) {
-        File file = GetAlbumDirectory();
+        File file = MediaManager.GetAlbumDirectory();
         if (file.isDirectory())
         {
             File[] listFile = file.listFiles();
@@ -201,40 +202,6 @@ public class RememberActivity extends Activity {
         }
     }
 
-
-
-
-    // Refactor this stuff into the AlbumManager
-    protected String AlbumName = "Appitude"; //getResources().getString(R.string.app_name);
-    private File GetAlbumDirectory() {
-        File storageDir = null;
-
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
-        {
-            storageDir = AlbumStorageFactory.Create(AlbumName).GetAlbumStoragePath();
-
-            if (storageDir != null)
-            {
-                if (! storageDir.mkdirs())
-                {
-                    if (! storageDir.exists())
-                    {
-                        Log.d("Appitude.CaptureActivity.GetAlbumDirectory", "failed to create directory");
-                        return null;
-                    }
-                }
-            }
-
-        } else {
-            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
-        }
-
-        return storageDir;
-    }
-
-
-
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -244,7 +211,6 @@ public class RememberActivity extends Activity {
         // are available.
         delayedHide(100);
     }
-
 
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
