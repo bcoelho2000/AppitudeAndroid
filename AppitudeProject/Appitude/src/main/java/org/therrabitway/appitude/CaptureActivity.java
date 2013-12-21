@@ -21,6 +21,7 @@ import android.os.Build;
 import android.widget.ImageView;
 
 import org.therrabitway.appitude.Factory.AlbumStorageFactory;
+import org.therrabitway.appitude.Technical.BitmapManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,59 +87,6 @@ public class CaptureActivity extends ActionBarActivity {
         mediaScanIntent.setData(Uri.fromFile(new File(filePath)));
         this.sendBroadcast(mediaScanIntent);
     }
-
-
-
-
-    private void ApplyPictureOnImageView(ImageView mImageView, String picturePath)
-    {
-        /* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* Get the size of the ImageView */
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
-
-		/* Get the size of the image */
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picturePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-		/* Figure out which way needs to be reduced less */
-        int scaleFactor = 1;
-        int REQUIRED_SIZE = 400;
-        while (!(photoW / 2 < REQUIRED_SIZE || photoH / 2 < REQUIRED_SIZE)) {
-
-            photoW /= 2;
-            photoH /= 2;
-            scaleFactor *= 2;
-        }
-
-
-        /*
-        int scaleFactor = 1;
-        if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        }
-        */
-
-		/* Set bitmap options to scale the image decode target */
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-		/* Decode the JPEG file into a Bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(picturePath, bmOptions);
-
-		/* Associate the Bitmap to the ImageView */
-        mImageView.setImageBitmap(bitmap);
-
-    }
-
-
-
 
 
     @Override
@@ -207,7 +155,7 @@ public class CaptureActivity extends ActionBarActivity {
                 }
                 else
                 {
-                    ApplyPictureOnImageView(img, m_CurrentPhotoPath);
+                    img.setImageBitmap(BitmapManager.GetScaledBitmap(m_CurrentPhotoPath, img.getWidth(), img.getHeight(), 400));
                 }
 
                 // Add it to the gallery

@@ -2,6 +2,7 @@ package org.therrabitway.appitude;
 
 import org.therrabitway.appitude.Delegates.OnSwipeTouchListener;
 import org.therrabitway.appitude.Factory.AlbumStorageFactory;
+import org.therrabitway.appitude.Technical.BitmapManager;
 import org.therrabitway.appitude.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -188,7 +189,8 @@ public class RememberActivity extends Activity {
                 ImageView image = new ImageView(getApplicationContext());
                 //ApplyPictureOnImageView(image,listFile[i].getAbsolutePath());
                 try{
-                image.setImageBitmap(decodeUri(Uri.fromFile(listFile[i])));
+                    //image.setImageBitmap(decodeUri(Uri.fromFile(listFile[i])));
+                    image.setImageBitmap(BitmapManager.GetScaledBitmap(Uri.fromFile(listFile[i]), getContentResolver(), 400));
                 }
                 catch (FileNotFoundException e)
                 {
@@ -200,64 +202,6 @@ public class RememberActivity extends Activity {
     }
 
 
-    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(
-                getContentResolver().openInputStream(selectedImage), null, o);
-
-        final int REQUIRED_SIZE = 400;
-
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (!(width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)) {
-
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(
-                getContentResolver().openInputStream(selectedImage), null, o2);
-    }
-
-
-    // Refactor this stuff into a ImageManager
-    private void ApplyPictureOnImageView(ImageView mImageView, String picturePath) {
-
-		/* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* Get the size of the ImageView */
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
-
-		/* Get the size of the image */
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picturePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-		/* Figure out which way needs to be reduced less */
-        int scaleFactor = 1;
-        if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        }
-
-		/* Set bitmap options to scale the image decode target */
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-		/* Decode the JPEG file into a Bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(picturePath, bmOptions);
-
-		/* Associate the Bitmap to the ImageView */
-        mImageView.setImageBitmap(bitmap);
-    }
 
 
     // Refactor this stuff into the AlbumManager
