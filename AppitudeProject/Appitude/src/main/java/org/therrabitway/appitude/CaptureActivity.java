@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import org.therrabitway.appitude.Factory.AlbumStorageFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -89,9 +90,9 @@ public class CaptureActivity extends ActionBarActivity {
 
 
 
-    private void ApplyPictureOnImageView(ImageView mImageView, String picturePath) {
-
-		/* There isn't enough memory to open up more than a couple camera photos */
+    private void ApplyPictureOnImageView(ImageView mImageView, String picturePath)
+    {
+        /* There isn't enough memory to open up more than a couple camera photos */
 		/* So pre-scale the target bitmap into which the file is decoded */
 
 		/* Get the size of the ImageView */
@@ -107,9 +108,21 @@ public class CaptureActivity extends ActionBarActivity {
 
 		/* Figure out which way needs to be reduced less */
         int scaleFactor = 1;
+        int REQUIRED_SIZE = 400;
+        while (!(photoW / 2 < REQUIRED_SIZE || photoH / 2 < REQUIRED_SIZE)) {
+
+            photoW /= 2;
+            photoH /= 2;
+            scaleFactor *= 2;
+        }
+
+
+        /*
+        int scaleFactor = 1;
         if ((targetW > 0) || (targetH > 0)) {
             scaleFactor = Math.min(photoW/targetW, photoH/targetH);
         }
+        */
 
 		/* Set bitmap options to scale the image decode target */
         bmOptions.inJustDecodeBounds = false;
@@ -121,6 +134,7 @@ public class CaptureActivity extends ActionBarActivity {
 
 		/* Associate the Bitmap to the ImageView */
         mImageView.setImageBitmap(bitmap);
+
     }
 
 
