@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_capture">CaptureActivity</string>
     <string name="title_activity_remember">Remember</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_button">Share this!</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

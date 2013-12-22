@@ -9,6 +9,7 @@ import org.therrabitway.appitude.util.SystemUiHider;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -175,7 +176,7 @@ public class RememberActivity extends Activity {
 
         mSystemUiHider.toggle();
 
-        contentView.showNext();
+        //contentView.showNext();
 
 
     }
@@ -188,9 +189,8 @@ public class RememberActivity extends Activity {
             for (int i = 0; i < listFile.length; i++)
             {
                 ImageView image = new ImageView(getApplicationContext());
-                //ApplyPictureOnImageView(image,listFile[i].getAbsolutePath());
+
                 try{
-                    //image.setImageBitmap(decodeUri(Uri.fromFile(listFile[i])));
                     image.setImageBitmap(BitmapManager.GetScaledBitmap(Uri.fromFile(listFile[i]), getContentResolver(), 400));
                 }
                 catch (FileNotFoundException e)
@@ -201,6 +201,25 @@ public class RememberActivity extends Activity {
             }
         }
     }
+
+
+
+    public void ShareBtnSaveOnClick(View view)
+    {
+        final ViewFlipper contentView = (ViewFlipper) findViewById(R.id.fullscreen_content);
+        ImageView image = (ImageView) contentView.getCurrentView();
+        int indexImg = contentView.indexOfChild(image);
+        File file = MediaManager.GetAlbumDirectory();
+        File[] listFile = file.listFiles();
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(listFile[indexImg]));
+        shareIntent.setType("image/jpeg");
+        //startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+        startActivity(Intent.createChooser(shareIntent, "Share to"));
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
